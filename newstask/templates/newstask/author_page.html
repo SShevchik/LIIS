@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load news_tags %}
+
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block namepage %}{{ author }}{% endblock %}
+{% block buttonspace %}
+{% if request.user.is_authenticated %}
+{% if request.user|can_subscribe:author.id %}
+<div>
+    <a href="{% url 'subscribe' author.id %}" class="btn btn-primary">Subscribe</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% for item in news %}
+<div class="card mb-3">
+    <div class="card-header">
+        <span class="card-link">
+        Author: <a href="{% url 'author_page' item.author_id %}">{{item.author}}</a>
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            <div class="media-body">
+                <h5 class="card-title">{{item.title}}</h5>
+                <p class="card-text">{{item.content}}</p>
+            </div>
+        </div>
+    </div>
+    {% if request.user|has_group:'author' and request.user == item.author %}
+    <div class="card-footer text-muted">
+        <div class="text-end">
+            <a href="{% url 'edit_news' item.id %}" class="btn btn-primary">Edit</a>
+            <a href="{% url 'delete_news' item.id %}" class="btn btn-primary">Delete</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endfor %}
+{% endblock %}
