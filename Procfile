@@ -1,0 +1,1 @@
+web: gunicorn newstask.wsgi --log-file -
